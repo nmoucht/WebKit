@@ -34,6 +34,7 @@
 namespace WebCore {
 
 class AnimationTimelinesController;
+class Element;
 class WebAnimation;
 
 class AnimationTimeline : public RefCounted<AnimationTimeline>, public CanMakeWeakPtr<AnimationTimeline> {
