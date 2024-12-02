@@ -129,11 +129,18 @@ void CSSAnimation::syncPropertiesWithBackingAnimation()
                 CheckedRef timelinesController = document->ensureTimelinesController();
                 timelinesController->setTimelineForName(name, target, *this);
             }, [&] (Ref<ScrollTimeline> anonymousTimeline) {
-                if (RefPtr viewTimeline = dynamicDowncast<ViewTimeline>(anonymousTimeline))
-                    viewTimeline->setSubject(target.ptr());
-                else
-                    anonymousTimeline->setSource(target.ptr());
-                setTimeline(RefPtr { anonymousTimeline.ptr() });
+                ALWAYS_LOG_WITH_STREAM(stream << "CSSAnimation::syncPropertiesWithBackingAnimation: " << target << " viewtl: " << &anonymousTimeline << " animation: " << &animation);
+                if (RefPtr viewTimeline = dynamicDowncast<ViewTimeline>(anonymousTimeline)) {
+                    ViewTimelineInsets insetCopy = viewTimeline->insets();
+                    Ref timelineCopy = ViewTimeline::create(nullAtom(), viewTimeline->axis(), WTFMove(insetCopy));
+                    timelineCopy->setSubject(target.ptr());
+                    setTimeline(RefPtr { timelineCopy.ptr() });
+                }
+                else {
+                    Ref timelineCopy = ScrollTimeline::create(anonymousTimeline->scroller(), anonymousTimeline->axis());
+                    timelineCopy->setSource(target.ptr());
+                    setTimeline(RefPtr { timelineCopy.ptr() });
+                }
             }
         );
     }

@@ -48,6 +48,11 @@ Ref<ScrollTimeline> ScrollTimeline::create(const AtomString& name, ScrollAxis ax
     return adoptRef(*new ScrollTimeline(name, axis));
 }
 
+Ref<ScrollTimeline> ScrollTimeline::create(Scroller scroller, ScrollAxis axis)
+{
+    return adoptRef(*new ScrollTimeline(scroller, axis));
+}
+
 Ref<ScrollTimeline> ScrollTimeline::createFromCSSValue(const CSSScrollValue& cssScrollValue)
 {
     auto scroller = [&]() {
@@ -249,6 +254,7 @@ std::optional<WebAnimationTime> ScrollTimeline::currentTime(const TimelineRange&
     // scroll offset ÷ (scrollable overflow size − scroll container size)
     auto timelineRangeOrDefault = timelineRange.isDefault() ? defaultRange() : timelineRange;
     auto data = computeTimelineData(timelineRangeOrDefault);
+    ALWAYS_LOG_WITH_STREAM(stream << "ScrollTimeline::currentTime: start: " << data.rangeStart << " end: " << data.rangeEnd);
     auto range = data.rangeEnd - data.rangeStart;
     if (!range)
         return std::nullopt;

@@ -45,6 +45,7 @@
 #include "RenderSVGModelObject.h"
 #include "ScrollAnchoringController.h"
 #include "StyleBuilderConverter.h"
+#include "RenderBoxInlines.h"
 
 namespace WebCore {
 
@@ -236,6 +237,15 @@ RenderBox* ViewTimeline::sourceScrollerRenderer() const
     return subjectRenderer->enclosingScrollableContainer();
 }
 
+static FloatPoint pointForLocalToContainer(ScrollableArea& area)
+{
+    // For subscrollers we need to ajust the point fed into localToContainerPoint as the point
+    // it returns can be outside of the scroller
+    if (is<RenderLayerScrollableArea>(area))
+        return area.scrollOffset();
+    return FloatPoint();
+}
+
 ScrollTimeline::Data ViewTimeline::computeTimelineData(const TimelineRange& range) const
 {
     if (!m_subject)
@@ -260,15 +270,22 @@ ScrollTimeline::Data ViewTimeline::computeTimelineData(const TimelineRange& rang
     // - range is the scroll offset corresponding to the end of the cover range minus the scroll offset
     //   corresponding to the start of the cover range
 
-    float currentScrollOffset = axis() == ScrollAxis::Block ? sourceScrollableArea->scrollPosition().y() : sourceScrollableArea->scrollPosition().x();
+    float currentScrollOffset = axis() == ScrollAxis::Block ? sourceScrollableArea->scrollOffset().y() : sourceScrollableArea->scrollOffset().x();
     float scrollContainerSize = axis() == ScrollAxis::Block ? sourceScrollableArea->visibleHeight() : sourceScrollableArea->visibleWidth();
+    ALWAYS_LOG_WITH_STREAM(stream << "source: " << *source() << " target: " << *subjectRenderer->element());
 
-    auto subjectOffsetFromSource = subjectRenderer->localToContainerPoint(FloatPoint(), sourceScrollerRenderer());
+    ALWAYS_LOG_WITH_STREAM(stream << "scrollContainerSize: height" << sourceScrollableArea->visibleHeight() << " width: " << sourceScrollableArea->visibleWidth());
+
+    ALWAYS_LOG_WITH_STREAM(stream << "sourceScrollableArea->visibleSize: " << sourceScrollableArea->visibleSize() << " sourceScrollableArea->contentsSize: " << sourceScrollableArea->contentsSize());
+
+    auto subjectOffsetFromSource = subjectRenderer->localToContainerPoint(pointForLocalToContainer(*sourceScrollableArea), sourceScrollerRenderer());
+    ALWAYS_LOG_WITH_STREAM(stream << "offset: " << subjectOffsetFromSource << " scroll position: " << sourceScrollableArea->scrollOffset());
+//    ALWAYS_LOG_WITH_STREAM(stream << "computeTimelineData: " << sourceScrollerRenderer()->borderBox());
     float subjectOffset = axis() == ScrollAxis::Block ? subjectOffsetFromSource.y() : subjectOffsetFromSource.x();
 
     auto subjectBounds = [&] -> FloatSize {
         if (CheckedPtr subjectRenderBox = dynamicDowncast<RenderBox>(subjectRenderer.get()))
-            return subjectRenderBox->borderBoxRect().size();
+            return subjectRenderBox->contentBoxRect().size();
         if (CheckedPtr subjectRenderInline = dynamicDowncast<RenderInline>(subjectRenderer.get()))
             return subjectRenderInline->borderBoundingBox().size();
         if (CheckedPtr subjectRenderSVGModelObject = dynamicDowncast<RenderSVGModelObject>(subjectRenderer.get()))
@@ -277,6 +294,7 @@ ScrollTimeline::Data ViewTimeline::computeTimelineData(const TimelineRange& rang
             return subjectRenderer->objectBoundingBox().size();
         return { };
     }();
+    ALWAYS_LOG_WITH_STREAM(stream << "ViewTimeline::computeTimelineData:  subjectRenderBox: " << subjectBounds);
 
     auto subjectSize = axis() == ScrollAxis::Block ? subjectBounds.height() : subjectBounds.width();
 

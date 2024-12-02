@@ -449,6 +449,7 @@ void CSSToStyleMap::mapAnimationProperty(Animation& animation, const CSSValue& v
 
 void CSSToStyleMap::mapAnimationTimeline(Animation& animation, const CSSValue& value) const
 {
+    ALWAYS_LOG_WITH_STREAM(stream << "CSSToStyleMap::mapAnimationTimeline: " << &animation);
     if (treatAsInitialValue(value, CSSPropertyAnimationTimeline))
         animation.setTimeline(Animation::initialTimeline());
     else if (auto* viewValue = dynamicDowncast<CSSViewValue>(value))

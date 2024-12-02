@@ -45,6 +45,9 @@ struct TimelineRange;
 
 class ScrollTimeline : public AnimationTimeline {
 public:
+    enum class Scroller : uint8_t { Nearest, Root, Self };
+
+    static Ref<ScrollTimeline> create(Scroller scroller, ScrollAxis axis);
     static Ref<ScrollTimeline> create(ScrollTimelineOptions&& = { });
     static Ref<ScrollTimeline> create(const AtomString&, ScrollAxis);
     static Ref<ScrollTimeline> createFromCSSValue(const CSSScrollValue&);
@@ -58,6 +61,8 @@ public:
 
     const AtomString& name() const { return m_name; }
     void setName(const AtomString& name) { m_name = name; }
+    
+    Scroller scroller() const { return m_scroller; }
 
     virtual void dump(TextStream&) const;
     virtual Ref<CSSValue> toCSSValue(const RenderStyle&) const;
@@ -85,7 +90,6 @@ protected:
     virtual Data computeTimelineData(const TimelineRange&) const;
 
 private:
-    enum class Scroller : uint8_t { Nearest, Root, Self };
 
     explicit ScrollTimeline(ScrollTimelineOptions&& = { });
     explicit ScrollTimeline(Scroller, ScrollAxis);
