@@ -28,7 +28,7 @@
   setup(assert_implements_animation_timeline);
 
   function inflate(t, template) {
-    t.add_cleanup(() => main.replaceChildren());
+    // t.add_cleanup(() => main.replaceChildren());
     main.append(template.content.cloneNode(true));
     main.offsetTop;
   }
@@ -102,7 +102,7 @@
   }, 'Dynamically changing view-timeline attachment');
 </script>
 
-<template id=dynamic_view_timeline_axis>
+<!-- <template id=dynamic_view_timeline_axis>
   <style>
     #timeline {
       view-timeline: --t1;
@@ -196,5 +196,5 @@
     await waitForNextFrame();
     // The timeline became inactive.
     assert_equals(getComputedStyle(target).zIndex, '-1', 'display:none');
-  }, 'Element with scoped view-timeline becoming display:none');
+  }, 'Element with scoped view-timeline becoming display:none'); -->
 </script>

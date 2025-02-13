@@ -111,6 +111,7 @@ private:
     ScrollTimeline* determineTimelineForElement(const Vector<Ref<ScrollTimeline>>&, const Styleable&, const Vector<WeakStyleable>&);
     ScrollTimeline* determineTreeOrder(const Vector<Ref<ScrollTimeline>>&, const Styleable&, const Vector<WeakStyleable>&);
     ScrollTimeline& inactiveNamedTimeline(const AtomString&);
+    void updateTimelinesForNewTimeline(Vector<Ref<ScrollTimeline>> , const AtomString& );
 
     Ref<Document> protectedDocument() const { return m_document.get(); }
 

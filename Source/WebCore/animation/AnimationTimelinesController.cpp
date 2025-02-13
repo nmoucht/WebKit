@@ -468,9 +468,28 @@ void AnimationTimelinesController::registerNamedScrollTimeline(const AtomString&
         newScrollTimeline->setSource(source);
         updateTimelineForTimelineScope(newScrollTimeline, name);
         timelines.append(WTFMove(newScrollTimeline));
+        updateTimelinesForNewTimeline(timelines, name);
         updateCSSAnimationsAssociatedWithNamedTimeline(name);
     }
 }
+
+void AnimationTimelinesController::updateTimelinesForNewTimeline(Vector<Ref<ScrollTimeline>> timelines, const AtomString& name)
+{
+    HashSet<Ref<CSSAnimation>> cssAnimationsWithMatchingTimelineName;
+
+    for (auto& timeline : timelines) {
+        for (auto& animation : timeline->relevantAnimations()) {
+            if (RefPtr cssAnimation = dynamicDowncast<CSSAnimation>(animation.get())) {
+                if (!cssAnimation->owningElement())
+                    continue;
+                cssAnimationsWithMatchingTimelineName.add(*cssAnimation);
+            }
+        }
+    }
+    for (auto& cssAnimation : cssAnimationsWithMatchingTimelineName)
+        setTimelineForName(name, *cssAnimation->owningElement(), cssAnimation);
+}
+
 
 void AnimationTimelinesController::updateCSSAnimationsAssociatedWithNamedTimeline(const AtomString& name)
 {
@@ -548,6 +567,7 @@ void AnimationTimelinesController::registerNamedViewTimeline(const AtomString& n
         newViewTimeline->setSubject(subject);
         updateTimelineForTimelineScope(newViewTimeline, name);
         timelines.append(WTFMove(newViewTimeline));
+        updateTimelinesForNewTimeline(timelines, name);
     }
 
     if (!hasExistingTimeline)
