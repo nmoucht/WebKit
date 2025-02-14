@@ -409,7 +409,9 @@ ScrollTimeline* AnimationTimelinesController::determineTimelineForElement(const 
         auto styleableForTimeline = originatingStyleableIncludingTimelineScope(timeline).styleable();
         if (!styleableForTimeline)
             continue;
-        if (&styleableForTimeline->element == &styleable.element || styleable.element.isDescendantOf(styleableForTimeline->element))
+        
+        ALWAYS_LOG_WITH_STREAM(stream << "determineTimelineForElement: " << styleable << " styleableForTimeline: " << styleableForTimeline);
+        if (&styleableForTimeline->element == &styleable.element || styleable.element.isDescendantOrShadowDescendantOf(styleableForTimeline->element))
             matchedTimelines.append(timeline);
     }
     if (matchedTimelines.isEmpty())
@@ -426,27 +428,22 @@ Vector<Ref<ScrollTimeline>>& AnimationTimelinesController::timelinesForName(cons
 
 void AnimationTimelinesController::updateTimelineForTimelineScope(const Ref<ScrollTimeline>& timeline, const AtomString& name)
 {
-    Vector<Styleable> matchedTimelineScopeElements;
+    Vector<WeakStyleable> matchedTimelineScopeElements;
     auto timelineElement = originatingElementExcludingTimelineScope(timeline).styleable();
     if (!timelineElement)
         return;
 
     for (auto& entry : m_timelineScopeEntries) {
         if (auto entryElement = entry.second.styleable()) {
-            if (timelineElement->element.isDescendantOf(entryElement->element) && (entry.first.type == TimelineScope::Type::All ||  entry.first.scopeNames.contains(name)))
+            if (timelineElement->element.isDescendantOrShadowDescendantOf(entryElement->element) && (entry.first.type == TimelineScope::Type::All ||  entry.first.scopeNames.contains(name)))
                 matchedTimelineScopeElements.appendIfNotContains(*entryElement);
         }
     }
-    auto* element = &timelineElement->element;
-    while (element) {
-        auto it = matchedTimelineScopeElements.findIf([element] (const Styleable& entry) {
-            return &entry.element == element;
+    if (!matchedTimelineScopeElements.isEmpty()) {
+        std::sort(matchedTimelineScopeElements.begin(), matchedTimelineScopeElements.end(), [] (const WeakStyleable& a,  const WeakStyleable& b) {
+            return a.element()->isDescendantOrShadowDescendantOf(*b.element());
         });
-        if (it != notFound) {
-            timeline->setTimelineScopeElement(matchedTimelineScopeElements.at(it).element);
-            return;
-        }
-        element = element->parentElement();
+        timeline->setTimelineScopeElement(*matchedTimelineScopeElements.first().element());
     }
 }
 
@@ -621,7 +618,7 @@ void AnimationTimelinesController::setTimelineForName(const AtomString& name, co
         auto nameIsWithinScope = [&] {
             for (auto timelineScopeElement : timelineScopeElements) {
                 ASSERT(timelineScopeElement.element());
-                if (styleable == timelineScopeElement.styleable() || styleable.element.isDescendantOf(*timelineScopeElement.element()))
+                if (styleable == timelineScopeElement.styleable() || styleable.element.isDescendantOrShadowDescendantOf(*timelineScopeElement.element()))
                     return true;
             }
             return false;
@@ -655,7 +652,7 @@ static void updateTimelinesForTimelineScope(Vector<Ref<ScrollTimeline>> entries,
 {
     for (auto& entry : entries) {
         if (auto entryElement = originatingElementExcludingTimelineScope(entry).styleable()) {
-            if (entryElement->element.isDescendantOf(styleable.element))
+            if (entryElement->element.isDescendantOrShadowDescendantOf(styleable.element))
                 entry->setTimelineScopeElement(styleable.element);
         }
     }
@@ -669,6 +666,12 @@ void AnimationTimelinesController::updateNamedTimelineMapForTimelineScope(const 
     // This property declares the scope of the specified timeline names to extend across this element’s subtree. This allows a named timeline
     // (such as a named scroll progress timeline or named view progress timeline) to be referenced by elements outside the timeline-defining element’s
     // subtree—​for example, by siblings, cousins, or ancestors.
+
+    // There should only be one TimelineScope entry per element
+    m_timelineScopeEntries.removeAllMatching([&] (const std::pair<TimelineScope, WeakStyleable>& entry) {
+        return entry.second == styleable;
+    });
+
     switch (scope.type) {
     case TimelineScope::Type::None:
         for (auto& entry : m_nameToTimelineMap) {
@@ -677,9 +680,6 @@ void AnimationTimelinesController::updateNamedTimelineMapForTimelineScope(const 
                     timeline->clearTimelineScopeDeclaredElement();
             }
         }
-        m_timelineScopeEntries.removeAllMatching([&] (const std::pair<TimelineScope, WeakStyleable> entry) {
-            return entry.second == styleable;
-        });
         break;
     case TimelineScope::Type::All:
         for (auto& entry : m_nameToTimelineMap)
