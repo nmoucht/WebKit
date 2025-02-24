@@ -403,6 +403,8 @@
 		1AF4129B18B40FCD00546FDC /* WKNavigationActionPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF4129A18B40FCD00546FDC /* WKNavigationActionPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1AF4592F19464B2000F9D4A2 /* WKError.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF4592D19464B2000F9D4A2 /* WKError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AF4CEF018BC481800BC2D34 /* VisitedLinkTableController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF4CEEE18BC481800BC2D34 /* VisitedLinkTableController.h */; };
+		1AF572302D690813008266F2 /* RemoteScrollingTreeCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1AF5722F2D690602008266F2 /* RemoteScrollingTreeCocoa.mm */; };
+		1AF572312D69081B008266F2 /* RemoteScrollingTreeCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF5722E2D6905B8008266F2 /* RemoteScrollingTreeCocoa.h */; };
 		1AFA3AC918E61C61003CCBAE /* WKUserContentController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AFA3AC718E61C61003CCBAE /* WKUserContentController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AFDD3151891B54000153970 /* APIPolicyClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AFDD3141891B54000153970 /* APIPolicyClient.h */; };
 		1AFDD3171891C94700153970 /* WKPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AFDD3161891C94700153970 /* WKPreferences.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3719,6 +3721,8 @@
 		1AF4592D19464B2000F9D4A2 /* WKError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKError.h; sourceTree = "<group>"; };
 		1AF4CEED18BC481800BC2D34 /* VisitedLinkTableController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VisitedLinkTableController.cpp; sourceTree = "<group>"; };
 		1AF4CEEE18BC481800BC2D34 /* VisitedLinkTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisitedLinkTableController.h; sourceTree = "<group>"; };
+		1AF5722E2D6905B8008266F2 /* RemoteScrollingTreeCocoa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteScrollingTreeCocoa.h; sourceTree = "<group>"; };
+		1AF5722F2D690602008266F2 /* RemoteScrollingTreeCocoa.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoteScrollingTreeCocoa.mm; sourceTree = "<group>"; };
 		1AFA3AC618E61C61003CCBAE /* WKUserContentController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WKUserContentController.mm; sourceTree = "<group>"; };
 		1AFA3AC718E61C61003CCBAE /* WKUserContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKUserContentController.h; sourceTree = "<group>"; };
 		1AFDD3141891B54000153970 /* APIPolicyClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APIPolicyClient.h; sourceTree = "<group>"; };
@@ -7071,9 +7075,6 @@
 		99A514612D5AC33F00937177 /* WebDriverBidiFrontendDispatchers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WebDriverBidiFrontendDispatchers.cpp; sourceTree = "<group>"; };
 		99A514622D5AC33F00937177 /* WebDriverBidiProtocolObjects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebDriverBidiProtocolObjects.h; sourceTree = "<group>"; };
 		99A514632D5AC33F00937177 /* WebDriverBidiProtocolObjects.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WebDriverBidiProtocolObjects.cpp; sourceTree = "<group>"; };
-		99A514992D5C0CA000937177 /* BidiBrowser.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = BidiBrowser.json; sourceTree = "<group>"; };
-		99A5149A2D5C0CA000937177 /* BidiBrowsingContext.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = BidiBrowsingContext.json; sourceTree = "<group>"; };
-		99A5149D2D5C0CF600937177 /* BidiLog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = BidiLog.json; sourceTree = "<group>"; };
 		99A7ACE326012919006D57FD /* WKInspectorResourceURLSchemeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKInspectorResourceURLSchemeHandler.h; sourceTree = "<group>"; };
 		99A7ACE42601291A006D57FD /* WKInspectorResourceURLSchemeHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WKInspectorResourceURLSchemeHandler.mm; sourceTree = "<group>"; };
 		99B16754252BB7E00073140E /* _WKInspectorExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WKInspectorExtension.h; sourceTree = "<group>"; };
@@ -10947,6 +10948,8 @@
 			children = (
 				2D6482492644B1AB00030335 /* RemoteLayerTreeLayers.h */,
 				2D64824A2644B1AB00030335 /* RemoteLayerTreeLayers.mm */,
+				1AF5722E2D6905B8008266F2 /* RemoteScrollingTreeCocoa.h */,
+				1AF5722F2D690602008266F2 /* RemoteScrollingTreeCocoa.mm */,
 			);
 			path = cocoa;
 			sourceTree = "<group>";
@@ -13807,16 +13810,6 @@
 				99A5144E2D5AB7D500937177 /* WebDriverBidiProcessor.h */,
 			);
 			path = Automation;
-			sourceTree = "<group>";
-		};
-		99A5149C2D5C0CA000937177 /* protocol */ = {
-			isa = PBXGroup;
-			children = (
-				99A514992D5C0CA000937177 /* BidiBrowser.json */,
-				99A5149A2D5C0CA000937177 /* BidiBrowsingContext.json */,
-				99A5149D2D5C0CF600937177 /* BidiLog.json */,
-			);
-			path = protocol;
 			sourceTree = "<group>";
 		};
 		99C3AE221DAD8E1400AF5C16 /* mac */ = {
@@ -17130,6 +17123,7 @@
 				0F59479B187B3B6000437857 /* RemoteScrollingCoordinatorProxy.h in Headers */,
 				0F5947A4187B3B7D00437857 /* RemoteScrollingCoordinatorTransaction.h in Headers */,
 				0F59479D187B3B6000437857 /* RemoteScrollingTree.h in Headers */,
+				1AF572312D69081B008266F2 /* RemoteScrollingTreeCocoa.h in Headers */,
 				1DD2A68625633C7200FF7B6F /* RemoteSourceBufferProxyMessages.h in Headers */,
 				460A4BA22AFEC9EF00240DB8 /* RemoteVideoFrameProxyProperties.h in Headers */,
 				A55BA8171BA23E12007CD33D /* RemoteWebInspectorUI.h in Headers */,
@@ -20068,6 +20062,7 @@
 				2D72A1FA212BF46E00517A20 /* RemoteLayerTreeDrawingArea.mm in Sources */,
 				2DC18FB4218A6E9E0025A88D /* RemoteLayerTreeViews.mm in Sources */,
 				0701789E23BE9CFC005F0FAA /* RemoteMediaPlayerMIMETypeCache.cpp in Sources */,
+				1AF572302D690813008266F2 /* RemoteScrollingTreeCocoa.mm in Sources */,
 				7BCF70DE2615D06E00E4FB70 /* ScopedRenderingResourcesRequestCocoa.mm in Sources */,
 				93468E6D2714AF88009983E3 /* SharedFileHandleCocoa.cpp in Sources */,
 				9BF622522C3E8559007F7021 /* SharedPreferencesForWebProcess.cpp in Sources */,
