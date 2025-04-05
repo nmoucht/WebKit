@@ -326,6 +326,7 @@ bool AnimationTimelinesController::isPendingTimelineAttachment(const WebAnimatio
 {
     CheckedPtr styleOriginatedTimelinesController = protectedDocument()->styleOriginatedTimelinesController();
     return styleOriginatedTimelinesController && styleOriginatedTimelinesController->isPendingTimelineAttachment(animation);
+    
 }
 
 #if ENABLE(THREADED_ANIMATION_RESOLUTION)
