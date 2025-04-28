@@ -209,6 +209,7 @@ public:
     // Update event regions, which only needs to happen once per rendering update.
     void updateEventRegions();
     void updateEventRegionsRecursive(RenderLayer&);
+    Vector<EventTrackingRegions> touchEventRegionsForTesting() const;
 
     struct RequiresCompositingData {
         LayoutUpToDate layoutUpToDate { LayoutUpToDate::Yes };

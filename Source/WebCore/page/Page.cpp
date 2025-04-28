@@ -729,19 +729,29 @@ Ref<DOMRectList> Page::nonFastScrollableRectsForTesting()
 Ref<DOMRectList> Page::touchEventRectsForEventForTesting(EventTrackingRegions::EventType eventType)
 {
     RefPtr localMainFrame = dynamicDowncast<LocalFrame>(m_mainFrame.get());
+    Vector<IntRect> rects;
+
     if (RefPtr document = localMainFrame ? localMainFrame->document() : nullptr) {
         document->updateLayout();
 #if ENABLE(IOS_TOUCH_EVENTS)
         document->updateTouchEventRegions();
 #endif
+#if ENABLE(TOUCH_EVENT_REGIONS)
+        Vector<EventTrackingRegions> eventTrackingRegions = document->touchEventRegionsForTesting();
+        for (auto& eventRegion : eventTrackingRegions) {
+            const auto& region = eventRegion.eventSpecificSynchronousDispatchRegions.get(eventType);
+            rects.appendVector(region.rects());
+        }
+#endif
     }
 
-    Vector<IntRect> rects;
+#if !ENABLE(TOUCH_EVENT_REGIONS)
     if (RefPtr scrollingCoordinator = this->scrollingCoordinator()) {
         const EventTrackingRegions& eventTrackingRegions = scrollingCoordinator->absoluteEventTrackingRegions();
         const auto& region = eventTrackingRegions.eventSpecificSynchronousDispatchRegions.get(eventType);
         rects.appendVector(region.rects());
     }
+#endif
 
     Vector<FloatQuad> quads(rects.size());
     for (size_t i = 0; i < rects.size(); ++i)
