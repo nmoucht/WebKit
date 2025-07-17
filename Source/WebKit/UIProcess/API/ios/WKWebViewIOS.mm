@@ -1232,7 +1232,7 @@ static void changeContentOffsetBoundedInValidRange(UIScrollView *scrollView, Web
             [self _reinsertTopFixedColorExtensionViewIfNeeded];
 #endif
 
-        if (WebKit::RemoteLayerTreeScrollingPerformanceData* scrollPerfData =   _page->scrollingPerformanceData())
+        if (CheckedPtr scrollPerfData =   _page->scrollingPerformanceData())
             scrollPerfData->didCommitLayerTree([self visibleRectInViewCoordinates]);
     }
 
@@ -2536,7 +2536,7 @@ ALLOW_DEPRECATED_DECLARATIONS_END
 
     [self _scheduleVisibleContentRectUpdateAfterScrollInView:scrollView];
 
-    if (WebKit::RemoteLayerTreeScrollingPerformanceData* scrollPerfData = _page->scrollingPerformanceData())
+    if (CheckedPtr scrollPerfData = _page->scrollingPerformanceData())
         scrollPerfData->didScroll([self visibleRectInViewCoordinates]);
 
     [_contentView updateSelection];
