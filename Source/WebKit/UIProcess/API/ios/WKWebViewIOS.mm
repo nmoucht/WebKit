@@ -2292,6 +2292,7 @@ static WebCore::FloatPoint constrainContentOffset(WebCore::FloatPoint contentOff
 #if ENABLE(ASYNC_SCROLLING)
     if (auto* coordinator = _page->scrollingCoordinatorProxy())
         coordinator->setRootNodeIsInUserScroll(false);
+//    coordinator->rootNodeDidFinishScrolling();
 #endif
 }
 
