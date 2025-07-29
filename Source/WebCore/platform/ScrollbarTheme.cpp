@@ -32,6 +32,10 @@
 #include <wtf/NeverDestroyed.h>
 #include <wtf/TZoneMallocInlines.h>
 
+#if PLATFORM(MAC)
+#include "ScrollbarThemeMockMac.h"
+#endif
+
 namespace WebCore {
 
 WTF_MAKE_TZONE_ALLOCATED_IMPL(ScrollbarTheme);
@@ -39,8 +43,13 @@ WTF_MAKE_TZONE_ALLOCATED_IMPL(ScrollbarTheme);
 ScrollbarTheme& ScrollbarTheme::theme()
 {
     if (DeprecatedGlobalSettings::mockScrollbarsEnabled()) {
+#if PLATFORM(MAC)
+        static NeverDestroyed<ScrollbarThemeMockMac> mockTheme;
+        return mockTheme;
+# else
         static NeverDestroyed<ScrollbarThemeMock> mockTheme;
         return mockTheme;
+# endif
     }
     return nativeTheme();
 }
