@@ -249,6 +249,7 @@ typedef NS_ENUM(NSInteger, _WKPrintRenderingCallbackType) {
     _WKPrintRenderingCallbackType _printRenderingCallbackType;
 
     Vector<RetainPtr<NSURL>> _temporaryURLsToDeleteWhenDeallocated;
+    BOOL _needsScrollend;
 }
 
 - (instancetype)_commonInitializationWithProcessPool:(WebKit::WebProcessPool&)processPool configuration:(Ref<API::PageConfiguration>&&)configuration
@@ -719,6 +720,7 @@ static WebCore::FloatBoxExtent floatBoxExtent(UIEdgeInsets insets)
         !!_sizeChangedSinceLastVisibleContentRectUpdate,
         !!self.webView._allowsViewportShrinkToFit,
         !!enclosedInScrollableAncestorView,
+        _needsScrollend,
         velocityData,
         downcast<WebKit::RemoteLayerTreeDrawingAreaProxy>(*drawingArea).lastCommittedMainFrameLayerTreeTransactionID());
 
@@ -732,6 +734,7 @@ static WebCore::FloatBoxExtent floatBoxExtent(UIEdgeInsets insets)
     _page->adjustLayersForLayoutViewport(_page->unobscuredContentRect().location(), layoutViewport, _page->displayedContentScale());
 
     _sizeChangedSinceLastVisibleContentRectUpdate = NO;
+    _needsScrollend = NO;
 
     drawingArea->updateDebugIndicator();
 
@@ -743,6 +746,7 @@ static WebCore::FloatBoxExtent floatBoxExtent(UIEdgeInsets insets)
 
 - (void)didFinishScrolling
 {
+    _needsScrollend = YES;
     [self _didEndScrollingOrZooming];
 }
 
