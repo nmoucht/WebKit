@@ -5637,21 +5637,31 @@ void Document::flushDeferredResizeEvents()
     runResizeSteps();
 }
 
+void Document::addPendingEventTarget(ContainerNode& target, PendingScrollEventTargetList& targetList)
+{
+    RefPtr<ContainerNode> host;
+    if (is<HTMLElement>(target) && dynamicDowncast<HTMLElement>(target)->isTextControlInnerTextElement()) {
+        if (RefPtr shadowHost = target.shadowHost())
+            host = shadowHost;
+    }
+
+    auto& targets = targetList.targets;
+    if (targets.containsIf([&] (auto& entry) { return entry.ptr() == host ? host : &target; }))
+        return;
+
+    if (targets.isEmpty())
+        scheduleRenderingUpdate(RenderingUpdateStep::Scroll);
+
+    targets.append(host ? *host : target);
+}
+
 void Document::addPendingScrollendEventTarget(ContainerNode& target)
 {
     if (!settings().scrollendEventEnabled())
         return;
     if (!m_pendingScrollendEventTargetList)
         m_pendingScrollendEventTargetList = makeUnique<PendingScrollEventTargetList>();
-
-    auto& targets = m_pendingScrollendEventTargetList->targets;
-    if (targets.containsIf([&] (auto& entry) { return entry.ptr() == &target; }))
-        return;
-
-    if (targets.isEmpty())
-        scheduleRenderingUpdate(RenderingUpdateStep::Scroll);
-
-    targets.append(target);
+    addPendingEventTarget(target, *m_pendingScrollendEventTargetList);
 }
 
 void Document::addPendingScrollEventTarget(ContainerNode& target)
@@ -5659,14 +5669,7 @@ void Document::addPendingScrollEventTarget(ContainerNode& target)
     if (!m_pendingScrollEventTargetList)
         m_pendingScrollEventTargetList = makeUnique<PendingScrollEventTargetList>();
 
-    auto& targets = m_pendingScrollEventTargetList->targets;
-    if (targets.findIf([&] (auto& entry) { return entry.ptr() == &target; }) != notFound)
-        return;
-
-    if (targets.isEmpty())
-        scheduleRenderingUpdate(RenderingUpdateStep::Scroll);
-
-    targets.append(target);
+    addPendingEventTarget(target, *m_pendingScrollEventTargetList);
 }
 
 void Document::setNeedsVisualViewportScrollEvent()
