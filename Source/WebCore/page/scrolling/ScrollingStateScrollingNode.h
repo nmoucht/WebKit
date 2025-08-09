@@ -55,6 +55,12 @@ struct ScrollbarEnabledState {
     bool verticalScrollbarIsEnabled { false };
 };
 
+struct ScrollbarColorState {
+    std::optional<Color> thumbColor;
+    std::optional<Color> trackColor;
+    friend bool operator==(const ScrollbarColorState&, const ScrollbarColorState&) = default;
+};
+
 class ScrollingStateScrollingNode : public ScrollingStateNode {
     WTF_MAKE_TZONE_ALLOCATED_EXPORT(ScrollingStateScrollingNode, WEBCORE_EXPORT);
 public:
@@ -129,6 +135,9 @@ public:
     ScrollbarEnabledState scrollbarEnabledState() const { return m_scrollbarEnabledState; }
     WEBCORE_EXPORT void setScrollbarEnabledState(ScrollbarOrientation, bool);
 
+    const ScrollbarColorState& scrollbarColorState() const { return m_scrollbarColorState; }
+    WEBCORE_EXPORT void setScrollbarColorState(ScrollbarColorState);
+
     void setScrollerImpsFromScrollbars(Scrollbar* verticalScrollbar, Scrollbar* horizontalScrollbar);
 
     WEBCORE_EXPORT void setMouseIsOverContentArea(bool);
@@ -175,6 +184,7 @@ protected:
         MouseLocationState&&,
         ScrollbarHoverState&&,
         ScrollbarEnabledState&&,
+        ScrollbarColorState&&,
         UserInterfaceLayoutDirection,
         ScrollbarWidth,
         bool useDarkAppearanceForScrollbars,
@@ -205,6 +215,7 @@ private:
     ScrollbarHoverState m_scrollbarHoverState;
     MouseLocationState m_mouseLocationState;
     ScrollbarEnabledState m_scrollbarEnabledState;
+    ScrollbarColorState m_scrollbarColorState;
 
 #if PLATFORM(MAC)
     RetainPtr<NSScrollerImp> m_verticalScrollerImp;

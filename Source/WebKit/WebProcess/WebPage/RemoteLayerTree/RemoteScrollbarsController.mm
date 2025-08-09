@@ -152,5 +152,12 @@ void RemoteScrollbarsController::updateScrollbarStyle()
     scrollableArea().scrollbarStyleChanged(theme.usesOverlayScrollbars() ? WebCore::ScrollbarStyle::Overlay : WebCore::ScrollbarStyle::AlwaysVisible, true);
 }
 
+void RemoteScrollbarsController::scrollbarColorChanged(std::pair<std::optional<WebCore::Color>, std::optional<WebCore::Color>> colorState)
+{
+    if (auto scrollingCoordinator = m_coordinator.get())
+        scrollingCoordinator->setScrollbarColorState(scrollableArea(), colorState);
+}
+
+
 }
 #endif // PLATFORM(MAC)

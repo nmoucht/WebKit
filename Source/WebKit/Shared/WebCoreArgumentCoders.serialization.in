@@ -4550,6 +4550,7 @@ header: <WebCore/ScrollingStateNode.h>
     ScrollbarLayoutDirection
     ScrollbarWidth
     UseDarkAppearanceForScrollbars
+    ScrollbarColorState
     FrameScaleFactor
     EventTrackingRegion
     RootContentsLayer

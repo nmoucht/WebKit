@@ -28,6 +28,7 @@
 
 #if PLATFORM(MAC)
 
+#import "ColorCocoa.h"
 #import "FloatPoint.h"
 #import "IntRect.h"
 #import "NSScrollerImpDetails.h"
@@ -384,6 +385,8 @@ void ScrollerMac::updateValues()
     [m_scrollerImp setDoubleValue:values.value];
     [m_scrollerImp setPresentationValue:values.value];
     [m_scrollerImp setKnobProportion:values.proportion];
+    [m_scrollerImp setTrackColor:m_trackColor.get()];
+    [m_scrollerImp setKnobColor:m_thumbColor.get()];
 
     END_BLOCK_OBJC_EXCEPTIONS
 }
@@ -497,6 +500,18 @@ void ScrollerMac::setScrollbarLayoutDirection(UserInterfaceLayoutDirection scrol
 void ScrollerMac::setNeedsDisplay()
 {
     [m_scrollerImp setNeedsDisplay:YES];
+}
+
+void ScrollerMac::scrollbarColorChanged(const ScrollbarColorState& scrollbarColorState)
+{
+    if (scrollbarColorState.thumbColor && scrollbarColorState.trackColor) {
+        m_trackColor = cocoaColor(*scrollbarColorState.trackColor);
+        m_thumbColor = cocoaColor(*scrollbarColorState.thumbColor);
+    } else {
+        m_trackColor = nullptr;
+        m_thumbColor = nullptr;
+    }
+    updateValues();
 }
 
 String ScrollerMac::scrollbarState() const

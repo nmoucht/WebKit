@@ -36,6 +36,7 @@
 
 namespace WebCore {
 class ScrollingCoordinator;
+class Color;
 }
 
 namespace WebKit {
@@ -59,6 +60,7 @@ public:
     int minimumThumbLength(WebCore::ScrollbarOrientation) final;
     void updateScrollbarEnabledState(WebCore::Scrollbar&) final;
     void scrollbarLayoutDirectionChanged(WebCore::UserInterfaceLayoutDirection) final;
+    void scrollbarColorChanged(std::pair<std::optional<WebCore::Color>, std::optional<WebCore::Color>>) final;
 
     void updateScrollbarStyle() final;
 

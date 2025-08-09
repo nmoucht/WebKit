@@ -458,6 +458,17 @@ void AsyncScrollingCoordinator::setScrollbarLayoutDirection(ScrollableArea& scro
     stateNode->setScrollbarLayoutDirection(scrollbarLayoutDirection);
 }
 
+void AsyncScrollingCoordinator::setScrollbarColorState(ScrollableArea& scrollableArea, std::pair<std::optional<Color>, std::optional<Color>> scrollbarColorState)
+{
+    ASSERT(isMainThread());
+    ASSERT(page());
+    RefPtr stateNode = dynamicDowncast<ScrollingStateScrollingNode>(stateNodeForScrollableArea(scrollableArea));
+    if (!stateNode)
+        return;
+
+    stateNode->setScrollbarColorState(ScrollbarColorState { scrollbarColorState.first, scrollbarColorState.second });
+}
+
 void AsyncScrollingCoordinator::setMouseIsOverScrollbar(Scrollbar* scrollbar, bool isOverScrollbar)
 {
     ASSERT(isMainThread());

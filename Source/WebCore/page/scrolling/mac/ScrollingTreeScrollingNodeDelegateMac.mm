@@ -117,6 +117,9 @@ void ScrollingTreeScrollingNodeDelegateMac::updateFromStateNode(const ScrollingS
     if (scrollingStateNode.hasChangedProperty(ScrollingStateNode::Property::MouseActivityState))
         m_scrollerPair->mouseMovedInContentArea(scrollingStateNode.mouseLocationState());
 
+    if (scrollingStateNode.hasChangedProperty(ScrollingStateNode::Property::ScrollbarColorState))
+        m_scrollerPair->scrollbarColorChanged(scrollingStateNode.scrollbarColorState());
+
     m_scrollerPair->updateValues();
 
     ThreadedScrollingTreeScrollingNodeDelegate::updateFromStateNode(scrollingStateNode);

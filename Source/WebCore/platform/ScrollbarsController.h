@@ -34,6 +34,7 @@
 
 namespace WebCore {
 
+class Color;
 class Scrollbar;
 class ScrollableArea;
 enum class ScrollbarOrientation : uint8_t;
@@ -107,6 +108,7 @@ public:
     WEBCORE_EXPORT virtual void setScrollbarMinimumThumbLength(WebCore::ScrollbarOrientation, int) { }
     WEBCORE_EXPORT virtual int minimumThumbLength(WebCore::ScrollbarOrientation) { return 0; }
     WEBCORE_EXPORT virtual void scrollbarLayoutDirectionChanged(UserInterfaceLayoutDirection) { }
+    WEBCORE_EXPORT virtual void scrollbarColorChanged(std::pair<std::optional<Color>, std::optional<Color>>);
 
     WEBCORE_EXPORT virtual void updateScrollerStyle() { }
 

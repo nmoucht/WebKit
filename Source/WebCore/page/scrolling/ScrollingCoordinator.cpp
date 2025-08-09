@@ -452,4 +452,9 @@ FrameIdentifier ScrollingCoordinator::mainFrameIdentifier() const
     return m_page->mainFrame().frameID();
 }
 
+void ScrollingCoordinator::setScrollbarColorState(ScrollableArea&, std::pair<std::optional<Color>, std::optional<Color>>)
+{
+
+}
+
 } // namespace WebCore

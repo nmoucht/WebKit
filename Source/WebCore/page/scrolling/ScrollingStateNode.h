@@ -225,7 +225,8 @@ enum class ScrollingStateNodeProperty : uint64_t {
     MouseActivityState                          = ContentAreaHoverState << 1,
     ScrollbarHoverState                         = MouseActivityState << 1,
     ScrollbarEnabledState                       = ScrollbarHoverState << 1,
-    ScrollbarLayoutDirection                    = ScrollbarEnabledState << 1,
+    ScrollbarColorState                         = ScrollbarEnabledState << 1,
+    ScrollbarLayoutDirection                    = ScrollbarColorState << 1,
     ScrollbarWidth                              = ScrollbarLayoutDirection << 1,
     UseDarkAppearanceForScrollbars              = ScrollbarWidth << 1,
     // ScrollingStateFrameScrollingNode
